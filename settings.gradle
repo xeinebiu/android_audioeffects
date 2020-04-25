@@ -1,0 +1,3 @@
+rootProject.name='Audio Effect'
+include ':app'
+include ':audioeffects'

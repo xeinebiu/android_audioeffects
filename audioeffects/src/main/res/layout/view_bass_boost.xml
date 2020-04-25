@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.appcompat.widget.LinearLayoutCompat
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/view_bass_sc_enable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="@string/enable"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/view_bass_boost_ll_container_bass_boost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_xmedium"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

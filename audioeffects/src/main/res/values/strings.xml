@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="custom">Custom</string>
+    <string name="presets">Presets</string>
+    <string name="bass_boost">Bass Boost</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="enable">Enable</string>
+</resources>
