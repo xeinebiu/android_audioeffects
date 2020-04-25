@@ -18,7 +18,7 @@ allprojects {
 Add the dependency
 ````groovy
 dependencies {
-    implementation 'com.github.xeinebiu:audioeffects:1.0.0'
+   implementation 'com.github.xeinebiu:android_audioeffects:1.0.0'
 }
 ````
 
