@@ -1,7 +1,6 @@
 package com.xeinebiu.audioeffects.views
 
 import android.content.Context
-import android.media.audiofx.BassBoost
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.appcompat.widget.SwitchCompat
 import com.xeinebiu.audioeffects.AudioEffectManager
 import com.xeinebiu.audioeffects.R
+import com.xeinebiu.audioeffects.XBassBoost
 
 /**
  * Bass View to work with given [audioEffectManager]
@@ -26,7 +26,7 @@ class BassView(
         LayoutInflater.from(context)
     }
 
-    private val bassBoost: BassBoost
+    private val bassBoost: XBassBoost
         get() = audioEffectManager.bassBoost
 
     /**
@@ -49,14 +49,15 @@ class BassView(
     private fun initBass(bassBoostContainer: LinearLayoutCompat) {
         if (!bassBoost.strengthSupported) return
         /* More than 20, the audio becomes very quiet and low */
-        val max = 20
+        val max = bassBoost.maxRecommendedStrength
+        val currentStrength = bassBoost.roundedStrength
 
         /* Create the layout */
         val bassView = layoutInflater.inflate(R.layout.item_bass, bassBoostContainer, false)
 
         /* Set minimum progress status to "0" */
         val minView: AppCompatTextView = bassView.findViewById(R.id.item_bass_tv_min)
-        minView.text = "0"
+        minView.text = currentStrength.toString()
 
         /* Set maximum status to [max] */
         val maxView: AppCompatTextView = bassView.findViewById(R.id.item_bass_tv_max)
@@ -65,10 +66,10 @@ class BassView(
         /* Find the [AppCompatSeekBar] from [bassView] */
         val seekBar: AppCompatSeekBar = bassView.findViewById(R.id.item_bass_sb_progress)
         seekBar.max = max
+        seekBar.progress = currentStrength.toInt()
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val bassStrength = (1000F / 19 * progress).toShort()
-                bassBoost.setStrength(bassStrength)
+                bassBoost.setStrength(progress.toShort())
                 minView.text = progress.toString()
             }
 

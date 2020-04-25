@@ -1,7 +1,6 @@
 package com.xeinebiu.audioeffects.views
 
 import android.content.Context
-import android.media.audiofx.Equalizer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.widget.*
 import com.xeinebiu.audioeffects.AudioEffectManager
 import com.xeinebiu.audioeffects.R
+import com.xeinebiu.audioeffects.XEqualizer
 
 /**
  * Equalizer View to work with given [audioEffectManager]
@@ -24,11 +24,11 @@ class EqualizerView(
         LayoutInflater.from(context)
     }
 
-    private val equalizer: Equalizer
+    private val equalizer: XEqualizer
         get() = audioEffectManager.equalizer
 
     /* Contains all [SeekBar] representing a single band */
-    private val seekBars: MutableMap<Short, AppCompatSeekBar> = HashMap()
+    private val seekBars: MutableMap<Short, BandLevel> = HashMap()
 
     /**
      * Create [View] from given [audioEffectManager]
@@ -42,6 +42,7 @@ class EqualizerView(
         initSwitch(rootView)
         initBands(bandsLinearLayout)
         initPresets(presetsLinearLayout)
+
         return rootView
     }
 
@@ -79,7 +80,14 @@ class EqualizerView(
 
             val seekBar: AppCompatSeekBar = bandItemView.findViewById(R.id.item_band_sb_progress)
             seekBar.max = upperEqualizerBandLevelMilliBel - lowerEqualizerBandLevelMilliBel
-            setProgress(seekBar, equalizerBandIndex)
+            val bandLevel = BandLevel(
+                seekBar,
+                equalizerBandIndex,
+                lowerEqualizerBandLevelMilliBel,
+                upperEqualizerBandLevelMilliBel
+            )
+            seekBars[equalizerBandIndex] = bandLevel
+            setProgress(bandLevel)
 
             seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                 override fun onProgressChanged(
@@ -93,14 +101,10 @@ class EqualizerView(
                     )
                 }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar) {
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar) {
-                }
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
             })
 
-            seekBars[equalizerBandIndex] = seekBar
             bandsLinearLayout.addView(bandItemView)
         }
     }
@@ -126,7 +130,7 @@ class EqualizerView(
      */
     private fun initPresets(presetsLinearLayout: LinearLayoutCompat) {
         val presetsCount = equalizer.numberOfPresets
-        val currentPreset = equalizer.currentPreset
+        val currentPreset = equalizer.currPreset
 
         /* Reference to the [checkIcon] so it can be easily switched */
         var currentPresetCheckImage: AppCompatImageView? = null
@@ -187,16 +191,17 @@ class EqualizerView(
      * @author xeinebiu
      */
     private fun updateSeekBar(equalizerBandIndex: Short) {
-        val seekBar = seekBars[equalizerBandIndex] ?: return
-        setProgress(seekBar, equalizerBandIndex)
+        val bandLevel = seekBars[equalizerBandIndex] ?: return
+        setProgress(bandLevel)
     }
 
     /**
-     * Set progress of [seekBar] from given [equalizerBandIndex] of [equalizer]
+     * Set progress of [bandLevel] from given [equalizerBandIndex] of [equalizer]
      * @author xeinebiu
      */
-    private fun setProgress(seekBar: AppCompatSeekBar, equalizerBandIndex: Short) {
-        seekBar.progress = equalizer.getBandLevel(equalizerBandIndex).toInt()
+    private fun setProgress(bandLevel: BandLevel) {
+        val level = equalizer.getBandLevel(bandLevel.index).toInt()
+        bandLevel.seekBar.progress = level + bandLevel.maxBandLevel
     }
 
     companion object {
@@ -213,4 +218,11 @@ class EqualizerView(
         private fun readableDb(milliBel: Short): String =
             "${milliBel / 100}dB"
     }
+
+    private data class BandLevel constructor(
+        val seekBar: AppCompatSeekBar,
+        val index: Short,
+        val lowestBandLevel: Short,
+        val maxBandLevel: Short
+    )
 }

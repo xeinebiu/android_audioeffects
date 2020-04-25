@@ -22,6 +22,15 @@ dependencies {
 }
 ````
 
+### Change Logs
+    1.0.1
+        - Improve: AudioEffectManager - Initial flag property 
+        - Fix: Equalizer - Remember Current Preset
+        - Fix: EqualizerView - Bands level shown incorrectly
+        - Fix: BassView - Remember state
+    1.0.0
+        - Initial Releaes
+
 ----
 ### Audio Session Id
 You can read the Session Id of your Audio from the MediaPlayer
