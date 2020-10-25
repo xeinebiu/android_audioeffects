@@ -23,6 +23,14 @@ dependencies {
 ````
 
 ### Change Logs
+    1.2.0
+        - Implement custom Listeners
+    1.1.2
+        - Fix wrong pointing listeners
+    1.1.1
+        - Clear all listeners when Release
+    1.1.0
+        - Add listeners for Equalizer & Bass Boost
     1.0.1
         - Improve: AudioEffectManager - Initial flag property 
         - Fix: Equalizer - Remember Current Preset
