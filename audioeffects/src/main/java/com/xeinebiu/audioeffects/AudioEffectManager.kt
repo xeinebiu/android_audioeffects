@@ -71,13 +71,19 @@ class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audio
         enableStatusListeners.remove(listener)
     }
 
-
     var currPreset: Short = currentPreset
         private set
 
     override fun usePreset(preset: Short) {
         super.usePreset(preset)
         currPreset = preset
+    }
+
+    override fun release() {
+        parameterListeners.clear()
+        controlStatusListeners.clear()
+        enableStatusListeners.clear()
+        super.release()
     }
 }
 
@@ -135,5 +141,12 @@ class XBassBoost(priority: Int, audioSessionId: Int) : BassBoost(priority, audio
 
     override fun getRoundedStrength(): Short {
         return (super.getRoundedStrength() / (1000F / maxRecommendedStrength)).toShort()
+    }
+
+    override fun release() {
+        parameterListeners.clear()
+        controlStatusListeners.clear()
+        enableStatusListeners.clear()
+        super.release()
     }
 }
