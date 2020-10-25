@@ -7,6 +7,8 @@ class AudioEffectManager constructor(
     audioSessionId: Int,
     initialState: Boolean = true
 ) {
+    private var releaseListeners = mutableListOf<() -> Unit>()
+
     var equalizer = XEqualizer(Integer.MAX_VALUE, audioSessionId)
         private set
 
@@ -18,9 +20,22 @@ class AudioEffectManager constructor(
         equalizer.enabled = initialState
     }
 
+    fun addReleaseListener(listener: () -> Unit) {
+        releaseListeners.add(listener)
+    }
+
+    fun removeReleaseListener(listener: () -> Unit) {
+        releaseListeners.remove(listener)
+    }
+
     fun release() {
-        equalizer.release()
-        bassBoost.release()
+        try {
+            equalizer.release()
+            bassBoost.release()
+        } finally {
+            releaseListeners.forEach { it() }
+            releaseListeners.clear()
+        }
     }
 }
 
@@ -62,10 +77,13 @@ class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audio
     }
 
     override fun release() {
-        bandChangeListeners.clear()
-        propertiesChangeListeners.clear()
-        enableStatusListeners.clear()
-        super.release()
+        try {
+            super.release()
+        } finally {
+            bandChangeListeners.clear()
+            propertiesChangeListeners.clear()
+            enableStatusListeners.clear()
+        }
     }
 
     override fun setEnabled(enabled: Boolean): Int {
@@ -145,10 +163,14 @@ class XBassBoost(priority: Int, audioSessionId: Int) : BassBoost(priority, audio
     }
 
     override fun release() {
-        strengthChangeListeners.clear()
-        propertiesChangeListeners.clear()
-        enableStatusListeners.clear()
-        super.release()
+        try {
+            super.release()
+
+        } finally {
+            strengthChangeListeners.clear()
+            propertiesChangeListeners.clear()
+            enableStatusListeners.clear()
+        }
     }
 
     override fun setEnabled(enabled: Boolean): Int {
