@@ -25,6 +25,53 @@ class AudioEffectManager constructor(
 }
 
 class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audioSessionId) {
+    private var parameterListeners = mutableListOf<OnParameterChangeListener>()
+    private var controlStatusListeners = mutableListOf<OnControlStatusChangeListener>()
+    private var enableStatusListeners = mutableListOf<OnControlStatusChangeListener>()
+
+    init {
+        setParameterListener { effect, status, param1, param2, value ->
+            parameterListeners.forEach {
+                it.onParameterChange(effect, status, param1, param2, value)
+            }
+        }
+        setControlStatusListener { effect, controlGranted ->
+            controlStatusListeners.forEach {
+                it.onControlStatusChange(effect, controlGranted)
+            }
+        }
+        setEnableStatusListener { effect, enabled ->
+            enableStatusListeners.forEach {
+                it.onControlStatusChange(effect, enabled)
+            }
+        }
+    }
+
+    fun addParameterChangeListener(listener: OnParameterChangeListener) {
+        parameterListeners.add(listener)
+    }
+
+    fun removeParameterChangeListener(listener: OnParameterChangeListener) {
+        parameterListeners.remove(listener)
+    }
+
+    fun addControlStatusChangeListener(listener: OnControlStatusChangeListener) {
+        controlStatusListeners.add(listener)
+    }
+
+    fun removeControlStatusChangeListener(listener: OnControlStatusChangeListener) {
+        controlStatusListeners.remove(listener)
+    }
+
+    fun addEnableStatusChangeListener(listener: OnControlStatusChangeListener) {
+        enableStatusListeners.add(listener)
+    }
+
+    fun removeEnableStatusChangeListener(listener: OnControlStatusChangeListener) {
+        enableStatusListeners.remove(listener)
+    }
+
+
     var currPreset: Short = currentPreset
         private set
 
@@ -36,6 +83,51 @@ class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audio
 
 class XBassBoost(priority: Int, audioSessionId: Int) : BassBoost(priority, audioSessionId) {
     val maxRecommendedStrength = 19
+    private var parameterListeners = mutableListOf<OnParameterChangeListener>()
+    private var controlStatusListeners = mutableListOf<OnControlStatusChangeListener>()
+    private var enableStatusListeners = mutableListOf<OnControlStatusChangeListener>()
+
+    init {
+        setParameterListener { effect, status, param, value ->
+            parameterListeners.forEach {
+                it.onParameterChange(effect, status, param, value)
+            }
+        }
+        setControlStatusListener { effect, controlGranted ->
+            controlStatusListeners.forEach {
+                it.onControlStatusChange(effect, controlGranted)
+            }
+        }
+        setEnableStatusListener { effect, enabled ->
+            enableStatusListeners.forEach {
+                it.onControlStatusChange(effect, enabled)
+            }
+        }
+    }
+
+    fun addParameterChangeListener(listener: OnParameterChangeListener) {
+        parameterListeners.add(listener)
+    }
+
+    fun removeParameterChangeListener(listener: OnParameterChangeListener) {
+        parameterListeners.remove(listener)
+    }
+
+    fun addControlStatusChangeListener(listener: OnControlStatusChangeListener) {
+        controlStatusListeners.add(listener)
+    }
+
+    fun removeControlStatusChangeListener(listener: OnControlStatusChangeListener) {
+        controlStatusListeners.remove(listener)
+    }
+
+    fun addEnableStatusChangeListener(listener: OnControlStatusChangeListener) {
+        enableStatusListeners.add(listener)
+    }
+
+    fun removeEnableStatusChangeListener(listener: OnControlStatusChangeListener) {
+        enableStatusListeners.remove(listener)
+    }
 
     override fun setStrength(strength: Short) {
         super.setStrength((1000F / maxRecommendedStrength * strength).toShort())
