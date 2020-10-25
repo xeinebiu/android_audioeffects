@@ -35,7 +35,8 @@ class BassView(
      */
     fun createView(): View {
         val rootView = layoutInflater.inflate(R.layout.view_bass_boost, parent, false) as ViewGroup
-        val bassLinearLayout: LinearLayoutCompat = rootView.findViewById(R.id.view_bass_boost_ll_container_bass_boost)
+        val bassLinearLayout: LinearLayoutCompat =
+            rootView.findViewById(R.id.view_bass_boost_ll_container_bass_boost)
 
         initBass(bassLinearLayout)
         initSwitch(rootView)
@@ -94,8 +95,8 @@ class BassView(
         switch.setOnCheckedChangeListener { _, isChecked ->
             bassBoost.enabled = isChecked
         }
-        bassBoost.setEnableStatusListener { _, enabled ->
-            switch.isChecked = enabled
+        bassBoost.addEnableStatusChangeListener {
+            switch.isChecked = it
         }
     }
 }

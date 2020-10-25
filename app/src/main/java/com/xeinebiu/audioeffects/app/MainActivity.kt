@@ -25,6 +25,13 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager,
             audioEffectManager
         )
+
+        audioEffectManager.equalizer.addPropertiesChangeListener {
+            println()
+        }
+        audioEffectManager.equalizer.addEnableStatusChangeListener {
+            println()
+        }
     }
 
     private fun setupMediaPlayer(): Int {

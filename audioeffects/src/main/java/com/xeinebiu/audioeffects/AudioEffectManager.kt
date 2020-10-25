@@ -25,54 +25,36 @@ class AudioEffectManager constructor(
 }
 
 class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audioSessionId) {
-    private var parameterListeners = mutableListOf<OnParameterChangeListener>()
-    private var controlStatusListeners = mutableListOf<OnControlStatusChangeListener>()
-    private var enableStatusListeners = mutableListOf<OnEnableStatusChangeListener>()
-
-    init {
-        setParameterListener { effect, status, param1, param2, value ->
-            parameterListeners.forEach {
-                it.onParameterChange(effect, status, param1, param2, value)
-            }
-        }
-        setControlStatusListener { effect, controlGranted ->
-            controlStatusListeners.forEach {
-                it.onControlStatusChange(effect, controlGranted)
-            }
-        }
-        setEnableStatusListener { effect, enabled ->
-            enableStatusListeners.forEach {
-                it.onEnableStatusChange(effect, enabled)
-            }
-        }
-    }
-
-    fun addParameterChangeListener(listener: OnParameterChangeListener) {
-        parameterListeners.add(listener)
-    }
-
-    fun removeParameterChangeListener(listener: OnParameterChangeListener) {
-        parameterListeners.remove(listener)
-    }
-
-    fun addControlStatusChangeListener(listener: OnControlStatusChangeListener) {
-        controlStatusListeners.add(listener)
-    }
-
-    fun removeControlStatusChangeListener(listener: OnControlStatusChangeListener) {
-        controlStatusListeners.remove(listener)
-    }
-
-    fun addEnableStatusChangeListener(listener: OnEnableStatusChangeListener) {
-        enableStatusListeners.add(listener)
-    }
-
-    fun removeEnableStatusChangeListener(listener: OnEnableStatusChangeListener) {
-        enableStatusListeners.remove(listener)
-    }
+    private var enableStatusListeners = mutableListOf<(Boolean) -> Unit>()
+    private var propertiesChangeListeners = mutableListOf<(Settings?) -> Unit>()
+    private var bandChangeListeners = mutableListOf<(band: Short, level: Short) -> Unit>()
 
     var currPreset: Short = currentPreset
         private set
+
+    fun addEnableStatusChangeListener(listener: (Boolean) -> Unit) {
+        enableStatusListeners.add(listener)
+    }
+
+    fun removeEnableStatusChangeListener(listener: (Boolean) -> Unit) {
+        enableStatusListeners.remove(listener)
+    }
+
+    fun addPropertiesChangeListener(listener: (Settings?) -> Unit) {
+        propertiesChangeListeners.add(listener)
+    }
+
+    fun removePropertiesChangeListener(listener: (Settings?) -> Unit) {
+        propertiesChangeListeners.remove(listener)
+    }
+
+    fun addBandChangeListeners(listener: (band: Short, level: Short) -> Unit) {
+        bandChangeListeners.add(listener)
+    }
+
+    fun removeBandChangeListeners(listener: (band: Short, level: Short) -> Unit) {
+        bandChangeListeners.remove(listener)
+    }
 
     override fun usePreset(preset: Short) {
         super.usePreset(preset)
@@ -80,73 +62,112 @@ class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audio
     }
 
     override fun release() {
-        parameterListeners.clear()
-        controlStatusListeners.clear()
+        bandChangeListeners.clear()
+        propertiesChangeListeners.clear()
         enableStatusListeners.clear()
         super.release()
+    }
+
+    override fun setEnabled(enabled: Boolean): Int {
+        try {
+            return super.setEnabled(enabled)
+        } finally {
+            enableStatusListeners.forEach {
+                it(enabled)
+            }
+        }
+    }
+
+    override fun setProperties(settings: Settings?) {
+        try {
+            super.setProperties(settings)
+        } finally {
+            propertiesChangeListeners.forEach {
+                it(settings)
+            }
+        }
+    }
+
+    override fun setBandLevel(band: Short, level: Short) {
+        try {
+            super.setBandLevel(band, level)
+        } finally {
+            bandChangeListeners.forEach {
+                it(band, level)
+            }
+        }
     }
 }
 
 class XBassBoost(priority: Int, audioSessionId: Int) : BassBoost(priority, audioSessionId) {
     val maxRecommendedStrength = 19
-    private var parameterListeners = mutableListOf<OnParameterChangeListener>()
-    private var controlStatusListeners = mutableListOf<OnControlStatusChangeListener>()
-    private var enableStatusListeners = mutableListOf<OnEnableStatusChangeListener>()
 
-    init {
-        setParameterListener { effect, status, param, value ->
-            parameterListeners.forEach {
-                it.onParameterChange(effect, status, param, value)
-            }
-        }
-        setControlStatusListener { effect, controlGranted ->
-            controlStatusListeners.forEach {
-                it.onControlStatusChange(effect, controlGranted)
-            }
-        }
-        setEnableStatusListener { effect, enabled ->
-            enableStatusListeners.forEach {
-                it.onEnableStatusChange(effect, enabled)
-            }
-        }
-    }
+    private var enableStatusListeners = mutableListOf<(Boolean) -> Unit>()
+    private var propertiesChangeListeners = mutableListOf<(Settings?) -> Unit>()
+    private var strengthChangeListeners = mutableListOf<(Short) -> Unit>()
 
-    fun addParameterChangeListener(listener: OnParameterChangeListener) {
-        parameterListeners.add(listener)
-    }
-
-    fun removeParameterChangeListener(listener: OnParameterChangeListener) {
-        parameterListeners.remove(listener)
-    }
-
-    fun addControlStatusChangeListener(listener: OnControlStatusChangeListener) {
-        controlStatusListeners.add(listener)
-    }
-
-    fun removeControlStatusChangeListener(listener: OnControlStatusChangeListener) {
-        controlStatusListeners.remove(listener)
-    }
-
-    fun addEnableStatusChangeListener(listener: OnEnableStatusChangeListener) {
+    fun addEnableStatusChangeListener(listener: (Boolean) -> Unit) {
         enableStatusListeners.add(listener)
     }
 
-    fun removeEnableStatusChangeListener(listener: OnEnableStatusChangeListener) {
+    fun removeEnableStatusChangeListener(listener: (Boolean) -> Unit) {
         enableStatusListeners.remove(listener)
     }
 
+    fun addPropertiesChangeListener(listener: (Settings?) -> Unit) {
+        propertiesChangeListeners.add(listener)
+    }
+
+    fun removePropertiesChangeListener(listener: (Settings?) -> Unit) {
+        propertiesChangeListeners.remove(listener)
+    }
+
+    fun addBandChangeListeners(listener: (Short) -> Unit) {
+        strengthChangeListeners.add(listener)
+    }
+
+    fun removeBandChangeListeners(listener: (Short) -> Unit) {
+        strengthChangeListeners.remove(listener)
+    }
+
     override fun setStrength(strength: Short) {
-        super.setStrength((1000F / maxRecommendedStrength * strength).toShort())
+        try {
+            super.setStrength((1000F / maxRecommendedStrength * strength).toInt().toShort())
+        } finally {
+            strengthChangeListeners.forEach {
+                it(strength)
+            }
+        }
     }
 
     override fun getRoundedStrength(): Short {
-        return (super.getRoundedStrength() / (1000F / maxRecommendedStrength)).toShort()
+        return (super.getRoundedStrength() / (1000F / maxRecommendedStrength)).toInt().toShort()
     }
 
     override fun release() {
-        parameterListeners.clear()
-        controlStatusListeners.clear()
+        strengthChangeListeners.clear()
+        propertiesChangeListeners.clear()
         enableStatusListeners.clear()
         super.release()
+    }
+
+    override fun setEnabled(enabled: Boolean): Int {
+        try {
+            return super.setEnabled(enabled)
+        } finally {
+            enableStatusListeners.forEach {
+                it(enabled)
+            }
+        }
+    }
+
+    override fun setProperties(settings: Settings?) {
+        try {
+            super.setProperties(settings)
+        } finally {
+            propertiesChangeListeners.forEach {
+                it(settings)
+            }
+        }
     }
 }

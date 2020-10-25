@@ -36,8 +36,10 @@ class EqualizerView(
      */
     fun createView(): View {
         val rootView = layoutInflater.inflate(R.layout.view_equalizer, parent, false) as ViewGroup
-        val bandsLinearLayout: LinearLayoutCompat = rootView.findViewById(R.id.view_equalizer_ll_container_bands)
-        val presetsLinearLayout: LinearLayoutCompat = rootView.findViewById(R.id.view_equalizer_ll_container_presets)
+        val bandsLinearLayout: LinearLayoutCompat =
+            rootView.findViewById(R.id.view_equalizer_ll_container_bands)
+        val presetsLinearLayout: LinearLayoutCompat =
+            rootView.findViewById(R.id.view_equalizer_ll_container_presets)
 
         initSwitch(rootView)
         initBands(bandsLinearLayout)
@@ -60,19 +62,22 @@ class EqualizerView(
 
             val bandItemView = layoutInflater.inflate(R.layout.item_band, parent, false)
 
-            val frequencyHeaderTextView: AppCompatTextView = bandItemView.findViewById(R.id.item_band_tv_frequency)
+            val frequencyHeaderTextView: AppCompatTextView =
+                bandItemView.findViewById(R.id.item_band_tv_frequency)
             frequencyHeaderTextView.text =
                 readableHertz(
                     equalizer.getCenterFreq(equalizerBandIndex)
                 )
 
-            val lowerEqualizerBandLevelTextView: AppCompatTextView = bandItemView.findViewById(R.id.item_band_tv_min)
+            val lowerEqualizerBandLevelTextView: AppCompatTextView =
+                bandItemView.findViewById(R.id.item_band_tv_min)
             lowerEqualizerBandLevelTextView.text =
                 readableDb(
                     lowerEqualizerBandLevelMilliBel
                 )
 
-            val upperEqualizerBandLevelTextView: AppCompatTextView = bandItemView.findViewById(R.id.item_band_tv_max)
+            val upperEqualizerBandLevelTextView: AppCompatTextView =
+                bandItemView.findViewById(R.id.item_band_tv_max)
             upperEqualizerBandLevelTextView.text =
                 readableDb(
                     upperEqualizerBandLevelMilliBel
@@ -119,8 +124,8 @@ class EqualizerView(
         switch.setOnCheckedChangeListener { _, isChecked ->
             equalizer.enabled = isChecked
         }
-        equalizer.setEnableStatusListener { effect, enabled ->
-            switch.isChecked = enabled
+        equalizer.addEnableStatusChangeListener {
+            switch.isChecked = it
         }
     }
 
