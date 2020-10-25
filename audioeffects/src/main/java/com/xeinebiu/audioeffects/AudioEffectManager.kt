@@ -27,7 +27,7 @@ class AudioEffectManager constructor(
 class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audioSessionId) {
     private var parameterListeners = mutableListOf<OnParameterChangeListener>()
     private var controlStatusListeners = mutableListOf<OnControlStatusChangeListener>()
-    private var enableStatusListeners = mutableListOf<OnControlStatusChangeListener>()
+    private var enableStatusListeners = mutableListOf<OnEnableStatusChangeListener>()
 
     init {
         setParameterListener { effect, status, param1, param2, value ->
@@ -42,7 +42,7 @@ class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audio
         }
         setEnableStatusListener { effect, enabled ->
             enableStatusListeners.forEach {
-                it.onControlStatusChange(effect, enabled)
+                it.onEnableStatusChange(effect, enabled)
             }
         }
     }
@@ -63,11 +63,11 @@ class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audio
         controlStatusListeners.remove(listener)
     }
 
-    fun addEnableStatusChangeListener(listener: OnControlStatusChangeListener) {
+    fun addEnableStatusChangeListener(listener: OnEnableStatusChangeListener) {
         enableStatusListeners.add(listener)
     }
 
-    fun removeEnableStatusChangeListener(listener: OnControlStatusChangeListener) {
+    fun removeEnableStatusChangeListener(listener: OnEnableStatusChangeListener) {
         enableStatusListeners.remove(listener)
     }
 
@@ -91,7 +91,7 @@ class XBassBoost(priority: Int, audioSessionId: Int) : BassBoost(priority, audio
     val maxRecommendedStrength = 19
     private var parameterListeners = mutableListOf<OnParameterChangeListener>()
     private var controlStatusListeners = mutableListOf<OnControlStatusChangeListener>()
-    private var enableStatusListeners = mutableListOf<OnControlStatusChangeListener>()
+    private var enableStatusListeners = mutableListOf<OnEnableStatusChangeListener>()
 
     init {
         setParameterListener { effect, status, param, value ->
@@ -106,7 +106,7 @@ class XBassBoost(priority: Int, audioSessionId: Int) : BassBoost(priority, audio
         }
         setEnableStatusListener { effect, enabled ->
             enableStatusListeners.forEach {
-                it.onControlStatusChange(effect, enabled)
+                it.onEnableStatusChange(effect, enabled)
             }
         }
     }
@@ -127,11 +127,11 @@ class XBassBoost(priority: Int, audioSessionId: Int) : BassBoost(priority, audio
         controlStatusListeners.remove(listener)
     }
 
-    fun addEnableStatusChangeListener(listener: OnControlStatusChangeListener) {
+    fun addEnableStatusChangeListener(listener: OnEnableStatusChangeListener) {
         enableStatusListeners.add(listener)
     }
 
-    fun removeEnableStatusChangeListener(listener: OnControlStatusChangeListener) {
+    fun removeEnableStatusChangeListener(listener: OnEnableStatusChangeListener) {
         enableStatusListeners.remove(listener)
     }
 
