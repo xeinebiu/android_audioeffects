@@ -18,11 +18,13 @@ allprojects {
 Add the dependency
 ````groovy
 dependencies {
-   implementation 'com.github.xeinebiu:android_audioeffects:1.0.0'
+   implementation 'com.github.xeinebiu:android_audioeffects:1.4.2'
 }
 ````
 
 ### Change Logs
+    1.4.1 .. 1.4.2
+        - Fix material dependency version
     1.4.0
         - Update dependencies
     1.3.0

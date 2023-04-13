@@ -6,7 +6,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.xeinebiu.audioeffects.AudioEffectManager
 import com.xeinebiu.audioeffects.AudioEffectViewHelper
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private var audioSessionId = 0
@@ -71,12 +70,5 @@ class MainActivity : AppCompatActivity() {
      * @author xeinebiu
      */
     fun asView(view: View) {
-        val tag = "asView"
-        val exists: View? = container.findViewWithTag(tag)
-        if (exists != null) return
-
-        val audioEffectView = audioEffectViewHelper.asView(container)
-        audioEffectView.tag = tag
-        container.addView(audioEffectView)
     }
 }
