@@ -20,7 +20,7 @@ import com.xeinebiu.audioeffects.XBassBoost
 class BassView(
     private val context: Context,
     private val parent: ViewGroup?,
-    private val audioEffectManager: AudioEffectManager
+    private val audioEffectManager: AudioEffectManager,
 ) {
     private val layoutInflater: LayoutInflater by lazy {
         LayoutInflater.from(context)
@@ -34,9 +34,15 @@ class BassView(
      * @author xeinebiu
      */
     fun createView(): View {
-        val rootView = layoutInflater.inflate(R.layout.view_bass_boost, parent, false) as ViewGroup
-        val bassLinearLayout: LinearLayoutCompat =
-            rootView.findViewById(R.id.view_bass_boost_ll_container_bass_boost)
+        val rootView = layoutInflater.inflate(
+            R.layout.view_bass_boost,
+            parent,
+            false,
+        ) as ViewGroup
+
+        val bassLinearLayout: LinearLayoutCompat = rootView.findViewById(
+            R.id.view_bass_boost_ll_container_bass_boost,
+        )
 
         initBass(bassLinearLayout)
         initSwitch(rootView)
@@ -49,6 +55,7 @@ class BassView(
      */
     private fun initBass(bassBoostContainer: LinearLayoutCompat) {
         if (!bassBoost.strengthSupported) return
+
         /* More than 20, the audio becomes very quiet and low */
         val max = bassBoost.maxRecommendedStrength
         val currentStrength = bassBoost.roundedStrength
@@ -74,11 +81,9 @@ class BassView(
                 minView.text = progress.toString()
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
 
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
         })
 
         /* Add created layout into the given [bassBoostContainer] */

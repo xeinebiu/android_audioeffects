@@ -16,7 +16,7 @@ import com.xeinebiu.audioeffects.views.AudioEffectView
 class AudioEffectViewHelper constructor(
     private val context: Context,
     private val fragmentManager: FragmentManager,
-    private val audioEffectManager: AudioEffectManager
+    private val audioEffectManager: AudioEffectManager,
 ) {
     /**
      * Create an instance of [AudioEffectView] from given [parent]
@@ -52,7 +52,7 @@ class AudioEffectViewHelper constructor(
 
     private fun createView(
         fragmentManager: FragmentManager,
-        parent: ViewGroup?
+        parent: ViewGroup?,
     ): AudioEffectView =
         AudioEffectView(fragmentManager, context, parent, audioEffectManager)
 }

@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         audioEffectViewHelper = AudioEffectViewHelper(
             this,
             supportFragmentManager,
-            audioEffectManager
+            audioEffectManager,
         )
 
         audioEffectManager.equalizer.addPropertiesChangeListener {

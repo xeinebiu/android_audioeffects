@@ -21,7 +21,7 @@ class AudioEffectView(
     private val fragmentManager: FragmentManager,
     private val context: Context,
     private val parent: ViewGroup?,
-    private val audioEffectManager: AudioEffectManager
+    private val audioEffectManager: AudioEffectManager,
 ) {
 
     /**
@@ -49,7 +49,7 @@ class AudioEffectView(
         val tabFragments = arrayListOf(equalizerFragment, bassBoostFragment)
         val tabFragmentsTitles = arrayListOf(
             context.getString(R.string.equalizer),
-            context.getString(R.string.bass_boost)
+            context.getString(R.string.bass_boost),
         )
         val adapter = FragmentAdapter(fragmentManager, tabFragments, tabFragmentsTitles)
         viewPager.adapter = adapter
@@ -65,21 +65,17 @@ class AudioEffectView(
     private inner class FragmentAdapter(
         fragmentManager: FragmentManager,
         private val tabFragments: List<Fragment>,
-        private val titleFragments: List<String>
-    ) :
-        FragmentPagerAdapter(
-            fragmentManager,
-            BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-        ) {
+        private val titleFragments: List<String>,
+    ) : FragmentPagerAdapter(
+        fragmentManager,
+        BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
+    ) {
 
-        override fun getItem(position: Int): Fragment =
-            tabFragments[position]
+        override fun getItem(position: Int): Fragment = tabFragments[position]
 
-        override fun getCount(): Int =
-            tabFragments.size
+        override fun getCount(): Int = tabFragments.size
 
-        override fun getPageTitle(position: Int): CharSequence? =
-            titleFragments[position]
+        override fun getPageTitle(position: Int): CharSequence = titleFragments[position]
     }
 }
 
@@ -97,7 +93,6 @@ class SimpleFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? =
-        onCreateViewCallback?.invoke(inflater, container)
+        savedInstanceState: Bundle?,
+    ): View? = onCreateViewCallback?.invoke(inflater, container)
 }

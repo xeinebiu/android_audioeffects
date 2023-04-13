@@ -19,8 +19,11 @@ class AudioEffectViewBottomSheetDialogFragment : BottomSheetDialogFragment(), Au
      * Return passed view as content for Dialog
      * @author xeinebiu
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        onCreateViewListener?.invoke(inflater, container)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? = onCreateViewListener?.invoke(inflater, container)
 
     /**
      * Make [Dialog] HALF EXPANDED by default
@@ -31,8 +34,10 @@ class AudioEffectViewBottomSheetDialogFragment : BottomSheetDialogFragment(), Au
         bottomSheetDialog.setOnShowListener { dia: DialogInterface ->
             val dialog = dia as BottomSheetDialog
             val bottomSheet: ViewGroup? = dialog.findViewById(R.id.design_bottom_sheet)
-            if (bottomSheet != null)
-                BottomSheetBehavior.from<ViewGroup>(bottomSheet).state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from<ViewGroup>(bottomSheet).state =
+                    BottomSheetBehavior.STATE_HALF_EXPANDED
+            }
         }
         return bottomSheetDialog
     }
@@ -40,6 +45,5 @@ class AudioEffectViewBottomSheetDialogFragment : BottomSheetDialogFragment(), Au
     /**
      * Close [BottomSheetDialogFragment]
      */
-    override fun close(): Unit =
-        dismiss()
+    override fun close(): Unit = dismiss()
 }

@@ -23,6 +23,8 @@ dependencies {
 ````
 
 ### Change Logs
+    1.4.0
+        - Update dependencies
     1.3.0
         - Add Listeners when AudioEffectManager is Released
     1.2.0

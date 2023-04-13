@@ -18,7 +18,7 @@ import com.xeinebiu.audioeffects.XEqualizer
 class EqualizerView(
     private val context: Context,
     private val parent: ViewGroup?,
-    private val audioEffectManager: AudioEffectManager
+    private val audioEffectManager: AudioEffectManager,
 ) {
     private val layoutInflater: LayoutInflater by lazy {
         LayoutInflater.from(context)
@@ -35,11 +35,19 @@ class EqualizerView(
      * @author xeinebiu
      */
     fun createView(): View {
-        val rootView = layoutInflater.inflate(R.layout.view_equalizer, parent, false) as ViewGroup
-        val bandsLinearLayout: LinearLayoutCompat =
-            rootView.findViewById(R.id.view_equalizer_ll_container_bands)
-        val presetsLinearLayout: LinearLayoutCompat =
-            rootView.findViewById(R.id.view_equalizer_ll_container_presets)
+        val rootView = layoutInflater.inflate(
+            R.layout.view_equalizer,
+            parent,
+            false,
+        ) as ViewGroup
+
+        val bandsLinearLayout: LinearLayoutCompat = rootView.findViewById(
+            R.id.view_equalizer_ll_container_bands,
+        )
+
+        val presetsLinearLayout: LinearLayoutCompat = rootView.findViewById(
+            R.id.view_equalizer_ll_container_presets,
+        )
 
         initSwitch(rootView)
         initBands(bandsLinearLayout)
@@ -62,26 +70,29 @@ class EqualizerView(
 
             val bandItemView = layoutInflater.inflate(R.layout.item_band, parent, false)
 
-            val frequencyHeaderTextView: AppCompatTextView =
-                bandItemView.findViewById(R.id.item_band_tv_frequency)
-            frequencyHeaderTextView.text =
-                readableHertz(
-                    equalizer.getCenterFreq(equalizerBandIndex)
-                )
+            val frequencyHeaderTextView: AppCompatTextView = bandItemView.findViewById(
+                R.id.item_band_tv_frequency,
+            )
 
-            val lowerEqualizerBandLevelTextView: AppCompatTextView =
-                bandItemView.findViewById(R.id.item_band_tv_min)
-            lowerEqualizerBandLevelTextView.text =
-                readableDb(
-                    lowerEqualizerBandLevelMilliBel
-                )
+            frequencyHeaderTextView.text = readableHertz(
+                equalizer.getCenterFreq(equalizerBandIndex),
+            )
 
-            val upperEqualizerBandLevelTextView: AppCompatTextView =
-                bandItemView.findViewById(R.id.item_band_tv_max)
-            upperEqualizerBandLevelTextView.text =
-                readableDb(
-                    upperEqualizerBandLevelMilliBel
-                )
+            val lowerEqualizerBandLevelTextView: AppCompatTextView = bandItemView.findViewById(
+                R.id.item_band_tv_min,
+            )
+
+            lowerEqualizerBandLevelTextView.text = readableDb(
+                lowerEqualizerBandLevelMilliBel,
+            )
+
+            val upperEqualizerBandLevelTextView: AppCompatTextView = bandItemView.findViewById(
+                R.id.item_band_tv_max,
+            )
+
+            upperEqualizerBandLevelTextView.text = readableDb(
+                upperEqualizerBandLevelMilliBel,
+            )
 
             val seekBar: AppCompatSeekBar = bandItemView.findViewById(R.id.item_band_sb_progress)
             seekBar.max = upperEqualizerBandLevelMilliBel - lowerEqualizerBandLevelMilliBel
@@ -89,7 +100,7 @@ class EqualizerView(
                 seekBar,
                 equalizerBandIndex,
                 lowerEqualizerBandLevelMilliBel,
-                upperEqualizerBandLevelMilliBel
+                upperEqualizerBandLevelMilliBel,
             )
             seekBars[equalizerBandIndex] = bandLevel
             setProgress(bandLevel)
@@ -98,16 +109,16 @@ class EqualizerView(
                 override fun onProgressChanged(
                     seekBar: SeekBar,
                     progress: Int,
-                    fromUser: Boolean
+                    fromUser: Boolean,
                 ) {
                     equalizer.setBandLevel(
                         equalizerBandIndex,
-                        (progress + lowerEqualizerBandLevelMilliBel).toShort()
+                        (progress + lowerEqualizerBandLevelMilliBel).toShort(),
                     )
                 }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+                override fun onStartTrackingTouch(seekBar: SeekBar) = Unit
+                override fun onStopTrackingTouch(seekBar: SeekBar) = Unit
             })
 
             bandsLinearLayout.addView(bandItemView)
@@ -156,8 +167,9 @@ class EqualizerView(
             checkIcon.visibility = if (currentPreset == preset) {
                 currentPresetCheckImage = checkIcon
                 View.VISIBLE
-            } else
+            } else {
                 View.GONE
+            }
 
             /* Listen for [preset] click */
             view.setOnClickListener {
@@ -213,21 +225,19 @@ class EqualizerView(
         /**
          * Convert given [millihertz] to a readable Text
          */
-        private fun readableHertz(millihertz: Int): String =
-            "${millihertz / 1000}Hz"
+        private fun readableHertz(millihertz: Int): String = "${millihertz / 1000}Hz"
 
         /**
          * Convert given [milliBel] to readable Text
          * @author xeinebiu
          */
-        private fun readableDb(milliBel: Short): String =
-            "${milliBel / 100}dB"
+        private fun readableDb(milliBel: Short): String = "${milliBel / 100}dB"
     }
 
     private data class BandLevel constructor(
         val seekBar: AppCompatSeekBar,
         val index: Short,
         val lowestBandLevel: Short,
-        val maxBandLevel: Short
+        val maxBandLevel: Short,
     )
 }

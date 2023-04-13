@@ -5,14 +5,14 @@ import android.media.audiofx.Equalizer
 
 class AudioEffectManager constructor(
     audioSessionId: Int,
-    initialState: Boolean = true
+    initialState: Boolean = true,
 ) {
     private var releaseListeners = mutableListOf<() -> Unit>()
 
-    var equalizer = XEqualizer(Integer.MAX_VALUE, audioSessionId)
+    var equalizer: XEqualizer = XEqualizer(Integer.MAX_VALUE, audioSessionId)
         private set
 
-    var bassBoost = XBassBoost(Integer.MAX_VALUE, audioSessionId)
+    var bassBoost: XBassBoost = XBassBoost(Integer.MAX_VALUE, audioSessionId)
         private set
 
     init {
@@ -39,10 +39,14 @@ class AudioEffectManager constructor(
     }
 }
 
-class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audioSessionId) {
-    private var enableStatusListeners = mutableListOf<(Boolean) -> Unit>()
-    private var propertiesChangeListeners = mutableListOf<(Settings?) -> Unit>()
-    private var bandChangeListeners = mutableListOf<(band: Short, level: Short) -> Unit>()
+class XEqualizer(
+    priority: Int,
+    audioSessionId: Int,
+) : Equalizer(priority, audioSessionId) {
+
+    private val enableStatusListeners = mutableListOf<(Boolean) -> Unit>()
+    private val propertiesChangeListeners = mutableListOf<(Settings?) -> Unit>()
+    private val bandChangeListeners = mutableListOf<(band: Short, level: Short) -> Unit>()
 
     var currPreset: Short = currentPreset
         private set
@@ -117,12 +121,16 @@ class XEqualizer(priority: Int, audioSessionId: Int) : Equalizer(priority, audio
     }
 }
 
-class XBassBoost(priority: Int, audioSessionId: Int) : BassBoost(priority, audioSessionId) {
+class XBassBoost(
+    priority: Int,
+    audioSessionId: Int,
+) : BassBoost(priority, audioSessionId) {
+
     val maxRecommendedStrength = 19
 
-    private var enableStatusListeners = mutableListOf<(Boolean) -> Unit>()
-    private var propertiesChangeListeners = mutableListOf<(Settings?) -> Unit>()
-    private var strengthChangeListeners = mutableListOf<(Short) -> Unit>()
+    private val enableStatusListeners = mutableListOf<(Boolean) -> Unit>()
+    private val propertiesChangeListeners = mutableListOf<(Settings?) -> Unit>()
+    private val strengthChangeListeners = mutableListOf<(Short) -> Unit>()
 
     fun addEnableStatusChangeListener(listener: (Boolean) -> Unit) {
         enableStatusListeners.add(listener)
@@ -165,7 +173,6 @@ class XBassBoost(priority: Int, audioSessionId: Int) : BassBoost(priority, audio
     override fun release() {
         try {
             super.release()
-
         } finally {
             strengthChangeListeners.clear()
             propertiesChangeListeners.clear()
