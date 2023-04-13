@@ -12,7 +12,6 @@ android {
         minSdkVersion 21
         targetSdkVersion 33
         versionCode 4
-        versionName "1.4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -36,7 +35,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'com.google.android.material:material:1.10.0-alpha01'
 }
 
 project.afterEvaluate {
@@ -46,7 +45,7 @@ project.afterEvaluate {
                 from components.release
 
                 groupId = 'com.github.xeinebiu'
-                version = '1.4.0'
+                version = '1.4.1'
             }
         }
     }
